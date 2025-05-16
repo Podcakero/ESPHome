@@ -1,0 +1,2 @@
+esphome -q clean `find devices/ -name *.yaml -not -path .esphome -not -name base.yaml -not -name secrets.yaml | tr '\n' ' '`
+esphome -q compile `find devices/ -name *.yaml -not -path .esphome -not -name base.yaml -not -name secrets.yaml | tr '\n' ' '`

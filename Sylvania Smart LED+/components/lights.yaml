@@ -1,0 +1,15 @@
+light:
+  - platform: rgbw
+    id: "sylvania_smart_plus"
+    name: "sylvania-smart-plus"
+    color_interlock: true
+    red: output_red
+    green: output_green
+    blue: output_blue
+    white: output_white
+    effects:
+      - random:
+          name: "Random"
+      - flicker:
+          name: "Flicker"
+    restore_mode: ALWAYS_ON

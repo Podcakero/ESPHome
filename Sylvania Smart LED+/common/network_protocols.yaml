@@ -1,0 +1,9 @@
+network:
+  enable_ipv6: true
+
+api:
+  encryption:
+    key: ${api_key}
+
+mdns:
+  disabled: true

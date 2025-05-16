@@ -1,0 +1,13 @@
+output:
+  - platform: libretiny_pwm
+    id: output_green
+    pin: P8
+  - platform: libretiny_pwm
+    id: output_blue
+    pin: P9
+  - platform: libretiny_pwm
+    id: output_red
+    pin: P7
+  - platform: libretiny_pwm
+    id: output_white
+    pin: P24

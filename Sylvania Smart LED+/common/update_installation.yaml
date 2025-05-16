@@ -1,0 +1,30 @@
+ota:
+  - platform: esphome
+    id: esphome_ota
+    password: ${ota_password}
+    on_begin:
+      then:
+        - logger.log: 
+            format: "Starting ESPHome OTA Update"
+            level: INFO
+            tag: ota.esphome
+    on_progress:
+      then:
+        - logger.log: 
+            format: "ESPHome OTA Progess %0.1f%%"
+            args: ["x"]
+            level: INFO
+            tag: ota.esphome
+    on_end:
+      then:
+        - logger.log: 
+            format: "ESPHome OTA Update Complete"
+            level: INFO
+            tag: ota.esphome
+    on_error:
+      then:
+        - logger.log:
+            format: "ESPHome OTA Update Error %d"
+            args: ["x"]
+            level: INFO
+            tag: ota.esphome

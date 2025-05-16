@@ -1,0 +1,43 @@
+udp:
+  encryption: ${${node_name}_udp_key}
+  rolling_code_enable: true
+  ping_pong_enable: true
+  binary_sensors:
+    - ${area}_${node_name}_on
+  providers:
+    - name: ${name_1}
+      encryption: ${key_1}
+    - name: ${name_2}
+      encryption: ${key_2}
+    - name: ${name_3}
+      encryption: ${key_3}
+
+binary_sensor:
+  - platform: template
+    id: ${area}_${node_name}_on
+    condition: 
+      light.is_on: ${light_id}
+
+  - platform: udp
+    id: ${name_1}_on
+    provider: ${name_1}
+    on_press:
+      light.turn_on: ${light_id}
+    on_release:
+      light.turn_off: ${light_id}
+
+  - platform: udp
+    id: ${name_2}_on
+    provider: ${name_2}
+    on_press:
+      light.turn_on: ${light_id}
+    on_release:
+      light.turn_off: ${light_id}
+
+  - platform: udp
+    id: ${name_3}_on
+    provider: ${name_3}
+    on_press:
+      light.turn_on: ${light_id}
+    on_release:
+      light.turn_off: ${light_id}
