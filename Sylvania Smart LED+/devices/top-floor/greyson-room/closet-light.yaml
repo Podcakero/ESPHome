@@ -1,0 +1,11 @@
+packages:
+  base: !include 
+    file: base.yaml
+    vars:
+      api_key: !secret closet-light_api_key
+      ota_password: !secret closet-light_ota_password
+  device_type: !include ../../../device_types/closet-light.yaml
+
+substitutions:
+  node_name: "closet-light"
+  friendly_name: "Greyson's Closet Light"

@@ -1,0 +1,5 @@
+packages:
+  generic-light: !include generic-light.yaml
+
+substitutions:
+  device_type: closet-light

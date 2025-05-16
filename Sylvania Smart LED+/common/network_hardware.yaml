@@ -5,5 +5,5 @@ wifi:
   fast_connect: true
 
   ap:
-    ssid: ${area}_${node_name}
+    ssid: ${area}-${node_name}
     password: !secret wifi_password

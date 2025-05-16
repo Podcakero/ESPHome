@@ -1,5 +1,5 @@
 esphome:
-  name: ${area}_${node_name}
+  name: ${area}-${node_name}
   friendly_name: ${friendly_name}
   area: ${area}
   build_path: ../../../../.esphome

@@ -1,0 +1,11 @@
+packages:
+  base: !include 
+    file: base.yaml
+    vars:
+      api_key: !secret lamp-01_api_key
+      ota_password: !secret lamp-01_ota_password
+  device_type: !include ../../../device_types/lamp-light.yaml
+
+substitutions:
+  node_name: "lamp-01"
+  friendly_name: "Grey's Bedroom Lamp Light"
