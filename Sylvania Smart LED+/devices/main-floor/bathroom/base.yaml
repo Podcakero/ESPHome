@@ -1,9 +1,0 @@
-packages:
-  floor_base: !include 
-    file: ../base.yaml
-    vars:
-      api_key: ${api_key}
-      ota_password: ${ota_password}
-
-substitutions:
-  area: "bathroom"

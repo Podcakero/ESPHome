@@ -2,4 +2,3 @@
 tmp.txt
 secrets.yaml
 */**/.gitignore
-.venv

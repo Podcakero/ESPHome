@@ -1,0 +1,11 @@
+packages:
+  base: !include 
+    file: base.yaml
+    vars:
+      api_key: !secret lamp_02_api_key
+      ota_password: !secret lamp_02_ota_password
+  device_type: !include ../../../device_types/lamp_light.yaml
+
+substitutions:
+  node_name: "lamp_02"
+  friendly_name: "Lamp Light

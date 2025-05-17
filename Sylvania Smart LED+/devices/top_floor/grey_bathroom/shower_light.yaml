@@ -1,0 +1,11 @@
+packages:
+  base: !include 
+    file: base.yaml
+    vars:
+      api_key: !secret shower_light_api_key
+      ota_password: !secret shower_light_ota_password
+  device_type: !include ../../../device_types/shower_light.yaml
+
+substitutions:
+  node_name: "shower_light"
+  friendly_name: "Grey's Bathroom Shower Light"

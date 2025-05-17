@@ -1,0 +1,5 @@
+packages:
+  generic_light: !include generic_light.yaml
+
+substitutions:
+  device_type: lamp_post_light

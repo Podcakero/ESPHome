@@ -1,5 +1,0 @@
-packages:
-  generic-light: !include generic-light.yaml
-
-substitutions:
-  device_type: wall-lamp-light

@@ -1,0 +1,18 @@
+packages:
+  base: !include 
+    file: base.yaml
+    vars:
+      api_key: !secret bar_light_02_api_key
+      ota_password: !secret bar_light_02_ota_password
+  device_type: !include ../../../device_types/ceiling_light.yaml
+  linked_light: !include
+    file: ../../../templates/single_linked_light.yaml
+    vars:
+      light_id: sylvania_smart_plus
+      key: !secret bar_light_02_udp_key
+      name_1: ${area}_bar_light_01
+      key_1: !secret bar_light_01_udp_key
+
+substitutions:
+  node_name: "bar_light_02"
+  friendly_name: "Kitchen Bar Light"

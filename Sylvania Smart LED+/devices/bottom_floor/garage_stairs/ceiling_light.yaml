@@ -1,0 +1,20 @@
+packages:
+  base: !include 
+    file: base.yaml
+    vars:
+      api_key: !secret ceiling_light_api_key
+      ota_password: !secret ceiling_light_ota_password
+  device_type: !include ../../../device_types/ceiling_light.yaml
+  linked_light: !include
+    file: ../../../templates/double_linked_light.yaml
+    vars:
+      light_id: sylvania_smart_plus
+      key: !secret ceiling_light_udp_key
+      name_1: ${area}_dome_light_01
+      key_1: !secret dome_light_01_udp_key
+      name_2: ${area}_dome_light_02
+      key_2: !secret dome_light_02_udp_key
+
+substitutions:
+  node_name: "ceiling_light"
+  friendly_name: "Garage Stairs Ceiling Light"
