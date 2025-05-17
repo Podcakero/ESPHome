@@ -6,4 +6,4 @@ packages:
       ota_password: ${ota_password}
 
 substitutions:
-  area: "downstairs_bathroom"
+  area: "bathroom"
