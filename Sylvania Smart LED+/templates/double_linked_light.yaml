@@ -3,7 +3,7 @@ udp:
   rolling_code_enable: true
   ping_pong_enable: true
   binary_sensors:
-    - ${area}-${node_name}_on
+    - ${area}_${node_name}_on
   providers:
     - name: ${name_1}
       encryption: ${key_1}
@@ -12,7 +12,7 @@ udp:
 
 binary_sensor:
   - platform: template
-    id: ${area}-${node_name}_on
+    id: ${area}_${node_name}_on
     condition: 
       light.is_on: ${light_id}
 
