@@ -3,7 +3,7 @@ substitutions:
 
 esphome:
   includes:
-    - ../custom_components/ghomedimmer_uart_slider.h
+    - ../../../custom_components/ghomedimmer_uart_slider.h
 
 bk72xx:
   board: generic-bk7231t-qfn32-tuya
