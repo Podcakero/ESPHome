@@ -1,9 +1,59 @@
 packages:
-  device_base: !include
-    file: ../base.yaml
-    vars:
-      api_key: ${api_key}
-      ota_password: ${ota_password}
+  esphome: !include ../../../common/esphome.yaml
+  network_hardware: !include ../../../common/network_hardware.yaml
+  management_and_monitoring: !include ../../../common/management_and_monitoring.yaml
+  factory_reset: !include ../../../common/factory_reset.yaml
+  binary_sensor: !include ../../components/binary_sensor.yaml
+  custom_component: !include ../../components/custom_component.yaml
+  globals: !include ../../components/globals.yaml
+  interval: !include ../../components/interval.yaml
+  light: !include ../../components/light.yaml
+  number: !include ../../components/number.yaml
+  output: !include ../../components/output.yaml
+  sensor: !include ../../components/sensor.yaml
+  switch: !include ../../components/switch.yaml
+  uart: !include ../../components/uart.yaml
+
+network:
+  enable_ipv6: true
+
+api:
+
+mdns:
+  disabled: true
+
+ota:
+  - platform: esphome
+    id: esphome_ota
+    on_begin:
+      then:
+        - logger.log: 
+            format: "Starting ESPHome OTA Update"
+            level: INFO
+            tag: ota.esphome
+    on_progress:
+      then:
+        - logger.log: 
+            format: "ESPHome OTA Progess %0.1f%%"
+            args: ["x"]
+            level: INFO
+            tag: ota.esphome
+    on_end:
+      then:
+        - logger.log: 
+            format: "ESPHome OTA Update Complete"
+            level: INFO
+            tag: ota.esphome
+    on_error:
+      then:
+        - logger.log:
+            format: "ESPHome OTA Update Error %d"
+            args: ["x"]
+            level: INFO
+            tag: ota.esphome
+
+wifi:
+  use_address: "${dns_area}-${dns_name}"
 
 substitutions:
   floor: "generic"

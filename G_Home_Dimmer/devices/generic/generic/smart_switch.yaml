@@ -1,9 +1,5 @@
 packages:
-  base: !include
-    file: base.yaml
-    vars:
-      api_key: ""
-      ota_password: ""
+  base: !include base.yaml
   device_type: !include ../../../device_types/smart_switch.yaml
 
 substitutions:

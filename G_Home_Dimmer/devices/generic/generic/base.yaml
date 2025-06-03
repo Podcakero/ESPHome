@@ -2,8 +2,10 @@ packages:
   floor_base: !include
     file: ../base.yaml
     vars:
-      api_key: ${api_key}
-      ota_password: ${ota_password}
+      api_key: ''
+      ota_password: ''
+
+api:
 
 esphome:
   name_add_mac_suffix: true
