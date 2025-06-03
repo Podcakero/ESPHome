@@ -5,7 +5,7 @@ packages:
     file: ../../common/network_protocols.yaml
     vars:
       api_key: ${api_key}
-  management_and_monitoring: !include ../common/management_and_monitoring.yaml
+  management_and_monitoring: !include ../../common/management_and_monitoring.yaml
   update_installation: !include
     file: ../../common/update_installation.yaml
     vars:
