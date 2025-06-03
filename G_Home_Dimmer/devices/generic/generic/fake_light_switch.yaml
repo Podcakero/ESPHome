@@ -1,0 +1,12 @@
+packages:
+  base: !include
+    file: base.yaml
+    vars:
+      api_key: ""
+      ota_password: ""
+  device_type: !include ../../../device_types/fake_light_switch.yaml
+
+substitutions:
+  node_name: "fake_light_switch"
+  friendly_name: "Generic Fake Light Switch"
+  dns_name: "fake-light-switch"

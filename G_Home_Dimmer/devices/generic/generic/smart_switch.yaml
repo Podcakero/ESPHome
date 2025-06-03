@@ -1,0 +1,12 @@
+packages:
+  base: !include
+    file: base.yaml
+    vars:
+      api_key: ""
+      ota_password: ""
+  device_type: !include ../../../device_types/smart_switch.yaml
+
+substitutions:
+  node_name: "smart_switch"
+  friendly_name: "Generic Smart Switch"
+  dns_name: "smart-switch"

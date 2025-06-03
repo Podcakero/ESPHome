@@ -1,0 +1,12 @@
+packages:
+  base: !include
+    file: base.yaml
+    vars:
+      api_key: ""
+      ota_password: ""
+  device_type: !include ../../../device_types/fan_switch.yaml
+
+substitutions:
+  node_name: "fan_switch"
+  friendly_name: "Generic Fan Switch"
+  dns_name: "fan-switch"
