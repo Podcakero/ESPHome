@@ -1,0 +1,21 @@
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: P9
+      inverted: true
+    name: "Physical Button (Decoupled)"
+    on_press:
+      then:
+        - lambda: |-
+            id(button_state) = !id(button_state);
+            if (id(button_state)) {
+              // Locally turn ON green LED
+              id(green_led).turn_on();
+              // Command HA’s dimmer_slider → 100%
+              id(dimmer_slider).publish_state(100.0f);
+            } else {
+              // Locally turn OFF green LED
+              id(green_led).turn_off();
+              // Command HA’s dimmer_slider → 0%
+              id(dimmer_slider).publish_state(0.0f);
+            }

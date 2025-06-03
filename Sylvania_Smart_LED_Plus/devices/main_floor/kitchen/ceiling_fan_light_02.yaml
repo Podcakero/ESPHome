@@ -1,20 +1,12 @@
 packages:
-  base: !include 
+  base: !include
     file: base.yaml
     vars:
       api_key: !secret ceiling_fan_light_02_api_key
       ota_password: !secret ceiling_fan_light_02_ota_password
   device_type: !include ../../../device_types/ceiling_fan_light.yaml
-  linked_light: !include
-    file: ../../../templates/double_linked_light.yaml
-    vars:
-      light_id: sylvania_smart_plus
-      key: !secret ceiling_fan_light_02_udp_key
-      name_1: ${area}_ceiling_fan_light_01
-      key_1: !secret ceiling_fan_light_01_udp_key
-      name_2: ${area}_ceiling_fan_light_03
-      key_2: !secret ceiling_fan_light_03_udp_key
 
 substitutions:
   node_name: "ceiling_fan_light_02"
   friendly_name: "Kitchen Ceiling Fan Light"
+  dns_name: "ceiling-fan-light-02"

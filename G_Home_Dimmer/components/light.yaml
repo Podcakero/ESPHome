@@ -1,0 +1,5 @@
+light:
+  - platform: binary
+    id: status_led
+    name: "Status LED (Decoupled)"
+    output: status_led_output

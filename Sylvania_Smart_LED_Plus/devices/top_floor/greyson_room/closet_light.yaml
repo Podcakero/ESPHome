@@ -1,5 +1,5 @@
 packages:
-  base: !include 
+  base: !include
     file: base.yaml
     vars:
       api_key: !secret closet_light_api_key
@@ -9,3 +9,4 @@ packages:
 substitutions:
   node_name: "closet_light"
   friendly_name: "Greyson's Closet Light"
+  dns_name: "closet-light"

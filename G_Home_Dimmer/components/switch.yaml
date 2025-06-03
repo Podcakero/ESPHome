@@ -1,0 +1,8 @@
+# Green LED (P24): now driven entirely in firmware (no HA control)
+switch:
+  - platform: gpio
+    pin:
+      number: P24
+      inverted: true
+    id: green_led
+    name: "Green LED (Decoupled)"

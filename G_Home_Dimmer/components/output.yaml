@@ -1,0 +1,7 @@
+# Status LED (P26): blink until Wi-Fi, then solid on
+output:
+  - platform: gpio
+    pin:
+      number: P26
+      inverted: true
+    id: status_led_output

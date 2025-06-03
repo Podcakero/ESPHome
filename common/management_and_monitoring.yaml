@@ -1,5 +1,5 @@
 logger:
-  level: "INFO"
+  level: "DEBUG"
 
 web_server:
   port: 80

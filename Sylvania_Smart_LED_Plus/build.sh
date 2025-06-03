@@ -1,2 +1,1 @@
-esphome clean `find devices/ -name *.yaml -not -path .esphome -not -name base.yaml -not -name secrets.yaml | tr '\n' ' '`
-esphome compile `find devices/ -name *.yaml -not -path .esphome -not -name base.yaml -not -name secrets.yaml | tr '\n' ' '`
+esphome compile `find devices/ -name *.yaml -not -path .esphome -not -name base.yaml -not -name secrets.yaml -not -name arduino-cli.yaml | tr '\n' ' '`

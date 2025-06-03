@@ -1,5 +1,5 @@
 packages:
-  base: !include 
+  base: !include
     file: base.yaml
     vars:
       api_key: !secret lamp_post_api_key
@@ -9,3 +9,4 @@ packages:
 substitutions:
   node_name: "lamp_post"
   friendly_name: "Front Yard Lamp Post"
+  dns_name: "lamp-post"

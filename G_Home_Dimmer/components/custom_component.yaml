@@ -1,0 +1,5 @@
+#Start the single UART slider parser (shared header)
+custom_component:
+  - lambda: |-
+      auto *slider = new GHomeDimmerUartSlider(id(uart_bus), id(slider_sensor));
+      return {slider};

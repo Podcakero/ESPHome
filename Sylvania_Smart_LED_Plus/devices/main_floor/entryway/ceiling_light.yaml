@@ -1,5 +1,5 @@
 packages:
-  base: !include 
+  base: !include
     file: base.yaml
     vars:
       api_key: !secret ceiling_light_api_key
@@ -9,3 +9,4 @@ packages:
 substitutions:
   node_name: "ceiling_light"
   friendly_name: "Entryway Ceiling Light"
+  dns_name: "ceiling-light"

@@ -1,5 +1,5 @@
 packages:
-  base: !include 
+  base: !include
     file: base.yaml
     vars:
       api_key: !secret wall_lamp_api_key
@@ -9,3 +9,4 @@ packages:
 substitutions:
   node_name: "wall_lamp"
   friendly_name: "Balcony Wall Lamp"
+  dns_name: "wall-lamp"

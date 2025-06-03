@@ -1,5 +1,5 @@
 packages:
-  base: !include 
+  base: !include
     file: base.yaml
     vars:
       api_key: !secret lamp_02_api_key
@@ -8,4 +8,5 @@ packages:
 
 substitutions:
   node_name: "lamp_02"
-  friendly_name: "Lamp Light
+  friendly_name: "Lamp Light"
+  dns_name: "lamp-02"

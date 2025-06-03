@@ -1,0 +1,6 @@
+# UART bus: TX for triac, RX for slider data
+uart:
+  id: uart_bus
+  tx_pin: P11
+  rx_pin: P10
+  baud_rate: 115200

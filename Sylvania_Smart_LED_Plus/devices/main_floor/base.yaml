@@ -1,5 +1,5 @@
 packages:
-  device_base: !include 
+  device_base: !include
     file: ../base.yaml
     vars:
       api_key: ${api_key}

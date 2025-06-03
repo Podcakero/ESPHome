@@ -1,5 +1,5 @@
 packages:
-  base: !include 
+  base: !include
     file: base.yaml
     vars:
       api_key: !secret sink_light_api_key
@@ -9,3 +9,4 @@ packages:
 substitutions:
   node_name: "sink_light"
   friendly_name: "Kitchen Sink Light"
+  dns_name: "sink-light"

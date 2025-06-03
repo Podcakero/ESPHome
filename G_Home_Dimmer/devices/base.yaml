@@ -1,0 +1,26 @@
+packages:
+  esphome: !include ../../common/esphome.yaml
+  network_hardware: !include ../../common/network_hardware.yaml
+  network_protocols: !include
+    file: ../../common/network_protocols.yaml
+    vars:
+      api_key: ${api_key}
+  management_and_monitoring: !include ../common/management_and_monitoring.yaml
+  update_installation: !include
+    file: ../../common/update_installation.yaml
+    vars:
+      ota_password: ${ota_password}
+  factory_reset: !include ../../common/factory_reset.yaml
+  binary_sensor: !include ../components/binary_sensor.yaml
+  custom_component: !include ../components/custom_component.yaml
+  globals: !include ../component/globals.yaml
+  interval: !include ../components/interval.yaml
+  light: !include ../components/light.yaml
+  number: !include ../components/number.yaml
+  output: !include ../components/output.yaml
+  sensor: !include ../components/sensor.yaml
+  switch: !include ../components/switch.yaml
+  uart: !include ../components/uart.yaml
+
+wifi:
+  use_address: "${dns_area}-${dns_name}"

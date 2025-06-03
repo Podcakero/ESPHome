@@ -1,5 +1,5 @@
 packages:
-  floor_base: !include 
+  floor_base: !include
     file: ../base.yaml
     vars:
       api_key: ${api_key}
@@ -7,3 +7,4 @@ packages:
 
 substitutions:
   area: "drvwy"
+  dns_area: "drvwy"

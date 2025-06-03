@@ -1,0 +1,6 @@
+# Physical Button (P9): toggles HA’s triac‐slider and also green LED locally
+globals:
+  - id: button_state
+    type: bool
+    restore_value: no
+    initial_value: 'false'

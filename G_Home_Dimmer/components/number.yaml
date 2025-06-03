@@ -1,0 +1,34 @@
+# HA’s “Dimmer Level” (0–100%) → drives triac via UART, but no green LED here
+number:
+  - platform: template
+    name: "Dimmer Level (Decoupled)"
+    id: dimmer_slider
+    icon: mdi:lightbulb
+    optimistic: true
+    restore_value: true
+    min_value: 0
+    max_value: 100
+    step: 1
+    set_action:
+      then:
+        - lambda: |-
+            if (x <= 0.0f) {
+              // Send OFF
+              uint8_t off_cmd = 0x7F;
+              id(uart_bus).write_array(&off_cmd, 1);
+            } else {
+              // Compute dim and bar bytes
+              int dim = int((x / 100.0f) * 100.0f + 0.5f);
+              if (dim > 100) dim = 100;
+              uint8_t dim_cmd = 0x80 + dim;
+
+              int bar_level = int((x / 100.0f) * 6.0f + 1.0f + 0.5f);
+              if (bar_level < 1) bar_level = 1;
+              if (bar_level > 7) bar_level = 7;
+              uint8_t bar_cmd = 0x40 | bar_level;
+
+              // First bar, then dim
+              id(uart_bus).write_array(&bar_cmd, 1);
+              esphome::delay(14);
+              id(uart_bus).write_array(&dim_cmd, 1);
+            }

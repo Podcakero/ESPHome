@@ -1,0 +1,5 @@
+packages:
+  smart_switch: !include smart_switch.yaml
+
+substitutions:
+  device_type: fan_switch
