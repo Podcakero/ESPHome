@@ -1,0 +1,18 @@
+packages:
+  esphome: !include ../../common/esphome.yaml
+  network_hardware: !include ../../common/network_hardware.yaml
+  network_protocols: !include
+    file: ../../common/network_protocols.yaml
+    vars:
+      api_key: ${api_key}
+  management_and_monitoring: !include ../common/management_and_monitoring.yaml
+  update_installation: !include
+    file: ../../common/update_installation.yaml
+    vars:
+      ota_password: ${ota_password}
+  factory_reset: !include ../../common/factory_reset.yaml
+  light: !include ../components/light.yaml
+  output: !include ../components/output.yaml
+
+wifi:
+  use_address: "${dns_area}-${dns_name}"
