@@ -13,7 +13,7 @@ packages:
   factory_reset: !include ../../common/factory_reset.yaml
   binary_sensor: !include ../components/binary_sensor.yaml
   custom_component: !include ../components/custom_component.yaml
-  globals: !include ../component/globals.yaml
+  globals: !include ../components/globals.yaml
   interval: !include ../components/interval.yaml
   light: !include ../components/light.yaml
   number: !include ../components/number.yaml
