@@ -5,7 +5,7 @@ esphome:
       - script.execute: fast_boot_factory_reset_script
 
 substitutions:
-  factory_reset_boot_count_trigger: 5
+  factory_reset_boot_count_trigger: "5"
 
 globals:
   - id: fast_boot
