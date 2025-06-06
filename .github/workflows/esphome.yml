@@ -1,0 +1,22 @@
+name: ESPHome CI
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  build_g_home_dimmer:
+    name: Build G_Home_Dimmer Generic Firmware
+    runs-on: ubuntu-latest
+    steps:
+      - uses: esphome/build-action@v7.0.0
+        with:
+          yaml-file: G_Home_Dimmer/devices/generic/smart_switch.yaml
+      - uses: esphome/build-action@v7.0.0
+        with:
+          yaml-file: G_Home_Dimmer/devices/generic/smart_switch.yaml
+      - uses: esphome/build-action@v7.0.0
+        with:
+          yaml-file: G_Home_Dimmer/devices/generic/smart_switch.yaml
+      - uses: esphome/build-action@v7.0.0
+        with:
+          yaml-file: G_Home_Dimmer/devices/generic/smart_switch.yaml
