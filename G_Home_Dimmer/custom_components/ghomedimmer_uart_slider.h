@@ -2,8 +2,8 @@
 
 class GHomeDimmerUartSlider : public Component, public UARTDevice {
  public:
-  GHomeDimmerUartSlider(UARTComponent *parent, sensor::Sensor *sensor)
-      : UARTDevice(parent), slider_sensor(sensor) {}
+  GHomeDimmerUartSlider(UARTComponent *parent, number::Number *number)
+      : UARTDevice(parent), slider_number(number) {}
 
   void setup() override {
     // Sync HA slider state to dimmer on boot
@@ -38,7 +38,7 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
           float percent = (raw_val / 150.0f) * 100.0f;  // approximate 0..100%
           if (percent > 100.0f) percent = 100.0f;
           ESP_LOGI("ghome_uart", "Touch Slider → raw: %d → %.1f%%", raw_val, percent);
-          slider_sensor->publish_state(percent);
+          slider_number->publish_state(percent);
         }
       } else {
         // Not a valid packet start; drop one byte and continue
@@ -49,5 +49,5 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
 
 
  protected:
-  sensor::Sensor *slider_sensor;
+  number::Number *slider_number;
 };

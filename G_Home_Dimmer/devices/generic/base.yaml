@@ -10,7 +10,6 @@ packages:
   light: !include ../../components/light.yaml
   number: !include ../../components/number.yaml
   output: !include ../../components/output.yaml
-  sensor: !include ../../components/sensor.yaml
   switch: !include ../../components/switch.yaml
   uart: !include ../../components/uart.yaml
 
