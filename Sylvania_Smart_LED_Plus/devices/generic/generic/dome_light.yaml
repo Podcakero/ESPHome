@@ -1,0 +1,8 @@
+packages:
+  base: !include base.yaml
+  device_type: !include ../../../device_types/dome_light.yaml
+
+substitutions:
+  node_name: "dome_light"
+  friendly_name: "Generic Dome Light"
+  dns_name: "dome-light"

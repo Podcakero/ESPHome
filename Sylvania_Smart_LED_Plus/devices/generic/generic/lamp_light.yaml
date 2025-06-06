@@ -1,0 +1,8 @@
+packages:
+  base: !include base.yaml
+  device_type: !include ../../../device_types/lamp_light.yaml
+
+substitutions:
+  node_name: "lamp_light"
+  friendly_name: "Generic Lamp Light"
+  dns_name: "lamp-light"

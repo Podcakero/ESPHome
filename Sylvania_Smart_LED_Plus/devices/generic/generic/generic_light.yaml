@@ -1,0 +1,8 @@
+packages:
+  base: !include base.yaml
+  device_type: !include ../../../device_types/generic_light.yaml
+
+substitutions:
+  node_name: "generic_light"
+  friendly_name: "Generic Light"
+  dns_name: "generic-light"
