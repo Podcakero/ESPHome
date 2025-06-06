@@ -5,7 +5,7 @@ on:
     
 jobs:
   build_g_home_dimmer_fake_light_switch:
-    name: Build Generic G_Home_Dimmer Fake Light Switch firmware
+    name: ESPHome Builder
     uses: esphome/build-action@v7.0.0
     with:
       yaml-file: G_Home_Dimmer/devices/generic/smart_switch.yaml
