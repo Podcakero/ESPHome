@@ -1,7 +1,6 @@
-# HA’s “Dimmer Level” (0–100%) → drives triac via UART, but no green LED here
 number:
   - platform: template
-    name: "Dimmer Level (Decoupled)"
+    name: "Dimmer Level"
     id: dimmer_slider
     icon: mdi:lightbulb
     optimistic: true
@@ -13,41 +12,16 @@ number:
       then:
         - lambda: |-
             if (x <= 0.0f) {
-              // Send OFF
-              uint8_t off_cmd = 0x7F;
+              uint8_t off_cmd = 0x00;
               id(uart_bus).write_array(&off_cmd, 1);
             } else {
-              // Compute dim and bar bytes
-              int dim = int((x / 100.0f) * 100.0f + 0.5f);
-              if (dim > 100) dim = 100;
-              uint8_t dim_cmd = 0x80 + dim;
-
               int bar_level = int((x / 100.0f) * 6.0f + 1.0f + 0.5f);
               if (bar_level < 1) bar_level = 1;
               if (bar_level > 7) bar_level = 7;
               uint8_t bar_cmd = 0x40 | bar_level;
-
-              // First bar, then dim
+              int dim_val = int(x + 0.5f);
+              if (dim_val > 100) dim_val = 100;
+              uint8_t dim_cmd = 0x80 | dim_val;
               id(uart_bus).write_array(&bar_cmd, 1);
-              esphome::delay(14);
+              delay(14);
               id(uart_bus).write_array(&dim_cmd, 1);
-            }
-  - platform: template
-    id: slider_number
-    name: "Capacitive Slider (HA Control)"
-    optimistic: true
-    min_value: 0
-    max_value: 100
-    step: 1
-    restore_value: true
-    set_action:
-      then:
-        - lambda: |-
-            float perc = x;
-            // Send bargraph LED level based on value
-            int bar_level = int((perc / 100.0f) * 6.0f + 1.0f + 0.5f);
-            if (bar_level < 1) bar_level = 1;
-            if (bar_level > 7) bar_level = 7;
-            uint8_t bar_cmd = 0x40 | bar_level;
-            id(uart_bus).write_array(&bar_cmd, 1);
-            ESP_LOGD("cap_slider", "HA set slider to %.0f%% → LED bar = 0x%02X", perc, bar_cmd);

@@ -1,21 +1,22 @@
 binary_sensor:
   - platform: gpio
     pin:
-      number: P9
+      number: GPIO4
       inverted: true
-    name: "Physical Button (Decoupled)"
+    name: "Physical Button"
     on_press:
       then:
         - lambda: |-
             id(button_state) = !id(button_state);
             if (id(button_state)) {
-              // Locally turn ON green LED
+              uint8_t bar = 0x40 | 7;
+              uint8_t dim = 0x80 | 100;
+              id(uart_bus).write_array(&bar, 1);
+              delay(14);
+              id(uart_bus).write_array(&dim, 1);
               id(green_led).turn_on();
-              // Command HA’s dimmer_slider → 100%
-              id(dimmer_slider).publish_state(100.0f);
             } else {
-              // Locally turn OFF green LED
+              uint8_t off = 0x00;
+              id(uart_bus).write_array(&off, 1);
               id(green_led).turn_off();
-              // Command HA’s dimmer_slider → 0%
-              id(dimmer_slider).publish_state(0.0f);
             }

@@ -2,6 +2,34 @@ substitutions:
   device_type: smart_switch
 
 esphome:
+  on_boot:
+    priority: -100
+    then:
+      - lambda: |-
+          // Read HA’s saved slider value (0..100)
+          float v = id(dimmer_slider).state;
+          if (v <= 0.0f) {
+            // OFF command: 0x00
+            uint8_t off_cmd = 0x00;
+            ESP_LOGD("on_boot", "Resend at boot: HA=0%% → OFF=0x00");
+            id(uart_bus).write_array(&off_cmd, 1);
+            id(green_led).turn_off();
+          } else {
+            // Compute dim: 0..100 → 0x80..0xE4
+            int dim = int((v / 100.0f) * 100.0f + 0.5f);
+            if (dim > 100) dim = 100;
+            uint8_t dim_cmd = 0x80 + dim;
+            // Compute bar: 1..7 → 0x41..0x47
+            int bar_level = int((v / 100.0f) * 6.0f + 1.0f + 0.5f);
+            if (bar_level < 1) bar_level = 1;
+            if (bar_level > 7) bar_level = 7;
+            uint8_t bar_cmd = 0x40 | bar_level;
+            ESP_LOGD("on_boot", "Resend at boot: HA=%.0f%% → LED=0x%02X, DIM=0x%02X", v, bar_cmd, dim_cmd);
+            id(uart_bus).write_array(&bar_cmd, 1);
+            esphome::delay(14);
+            id(uart_bus).write_array(&dim_cmd, 1);
+            id(green_led).turn_on();
+          }
   includes:
     - ../../../custom_components/ghomedimmer_uart_slider.h
 

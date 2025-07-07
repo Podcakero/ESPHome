@@ -1,6 +1,4 @@
-# Combine both interval actions into one block
 interval:
-  # 1) Blink status LED until Wi-Fi connects
   - interval: 1s
     then:
       if:
@@ -11,31 +9,3 @@ interval:
           - light.toggle: status_led
         else:
           - light.turn_on: status_led
-
-  # 2) 5s after boot, resend HA’s stored triac value (bar + dim) to hardware,
-  #    and ensure green LED matches (on if value>0, off if 0).
-  - interval: 5s
-    then:
-      - lambda: |-
-          float v = id(dimmer_slider).state;
-          if (v <= 0.0f) {
-            // OFF command
-            uint8_t off_cmd = 0x7F;
-            id(uart_bus).write_array(&off_cmd, 1);
-            id(green_led).turn_off();
-          } else {
-            // Compute bargraph and dim bytes
-            int dim = int((v / 100.0f) * 100.0f + 0.5f);
-            if (dim > 100) dim = 100;
-            uint8_t dim_cmd = 0x80 + dim;
-
-            int bar_level = int((v / 100.0f) * 6.0f + 1.0f + 0.5f);
-            if (bar_level < 1) bar_level = 1;
-            if (bar_level > 7) bar_level = 7;
-            uint8_t bar_cmd = 0x40 | bar_level;
-
-            id(uart_bus).write_array(&bar_cmd, 1);
-            esphome::delay(14);
-            id(uart_bus).write_array(&dim_cmd, 1);
-            id(green_led).turn_on();
-          }
