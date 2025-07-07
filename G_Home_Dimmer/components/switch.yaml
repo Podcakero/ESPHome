@@ -1,7 +1,7 @@
 switch:
   - platform: gpio
     pin:
-      number: GPIO13
+      number: P24
       inverted: true
     id: green_led
     name: "Green LED"

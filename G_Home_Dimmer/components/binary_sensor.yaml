@@ -1,7 +1,7 @@
 binary_sensor:
   - platform: gpio
     pin:
-      number: GPIO4
+      number: P9
       inverted: true
     name: "Physical Button"
     on_press:

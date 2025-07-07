@@ -1,6 +1,6 @@
 output:
   - platform: gpio
     pin:
-      number: GPIO2
+      number: P26
       inverted: true
     id: status_led_output
