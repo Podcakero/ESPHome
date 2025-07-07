@@ -25,7 +25,6 @@ esphome:
 
 wifi:
   use_address: "${dns_area}-${dns_name}"
-  fast_connect: true
 
   ap:
     ssid: ${area}_${node_name}
