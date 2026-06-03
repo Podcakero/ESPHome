@@ -3,7 +3,7 @@ substitutions:
 
 esphome:
   includes:
-    - ../../custom_components/color_temp_rgbw_light/color_temp_rgbw_light.h
+    - ../../../custom_components/color_temp_rgbw_light.h
 
 bk72xx:
   board: generic-bk7231t-qfn32-tuya

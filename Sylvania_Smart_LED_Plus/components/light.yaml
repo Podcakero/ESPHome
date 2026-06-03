@@ -9,17 +9,17 @@ light:
       App.register_component(light_out);
       return {light_out};
     lights:
-      - id: ceiling_light
+      - id: bulb_light
         name: ${node_name}
 
         # Restore last known state (power/brightness/color) on reboot.
         # If no state is stored yet, default to ON.
         restore_mode: RESTORE_DEFAULT_ON
 
-        # Whenever the light is turned ON (by HA, button, etc.), force 100% brightness.
+        # Whenever the light is turned ON (by HA, button, etc.), set default brightness.
         on_turn_on:
           - light.turn_on:
-              id: ceiling_light
+              id: bulb_light
               brightness: 40%
 
         # Optional: make the "snap to on" immediate.
