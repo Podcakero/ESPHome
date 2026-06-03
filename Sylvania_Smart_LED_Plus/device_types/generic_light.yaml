@@ -2,14 +2,6 @@ substitutions:
   device_type: generic_light
 
 esphome:
-  on_boot:
-    priority: 700
-    then:
-      - light.turn_on:
-          id: "sylvania_smart_plus"
-          color_mode: COLOR_TEMPERATURE
-          brightness: 100%
-          color_temperature: 2000K
   includes:
     - ../../../custom_components/color_temp_rgbw_light.h
 

@@ -48,6 +48,8 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
   void write_state(light::LightState *state) override {
     float brightness;
     state->current_values_as_brightness(&brightness);
+    // Clamp brightness to 80% to prevent overdriving LEDs
+    brightness = clamp(brightness, 0.0f, 0.8f);
     float color_temp = state->current_values.get_color_temperature();
 
     if (color_temp != color_temp_ || (!rgb_changed_ && brightness != brightness_)) {
