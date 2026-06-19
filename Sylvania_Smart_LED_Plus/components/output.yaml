@@ -3,22 +3,26 @@ output:
     id: output_red
     pin: P7
     frequency: 5000 Hz
+    # 100% power overdrives the LEDs, so set max power to 80%
     max_power: 80%
 
   - platform: libretiny_pwm
     id: output_green
     pin: P8
     frequency: 5000 Hz
+    # 100% power overdrives the LEDs, so set max power to 80%
     max_power: 80%
 
   - platform: libretiny_pwm
     id: output_blue
     pin: P9
     frequency: 5000 Hz
+    # 100% power overdrives the LEDs, so set max power to 80%
     max_power: 80%
 
   - platform: libretiny_pwm
     id: output_white
     pin: P24
     frequency: 5000 Hz
+    # 100% power overdrives the LEDs, so set max power to 80%
     max_power: 80%

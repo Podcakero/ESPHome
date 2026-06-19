@@ -1,1 +1,1 @@
-./esphome.sh compile
+./esphome.sh compile $1
