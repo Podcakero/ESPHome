@@ -3,3 +3,8 @@ light:
     id: status_led
     name: "Status LED"
     output: status_led_output
+
+  - platform: monochromatic
+    id: dimmer_light
+    name: "Dimmer Slider Light"
+    output: output_brightness

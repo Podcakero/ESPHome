@@ -1,9 +1,12 @@
 light:
   - platform: custom
     lambda: |-
-      auto light_out = new CustomRGBWLight(id(output_red), id(output_green), id(output_blue), id(output_white));
-      App.register_component_(light_out);
-      return {light_out};
+      auto light_out = new esphome::color_temp_rgbw_light::ColorTempRGBWLight();
+      light_out->set_red(id(output_red));
+      light_out->set_green(id(output_green));
+      light_out->set_blue(id(output_blue));
+      light_out->set_white(id(output_white));
+      return { light_out };
     lights:
       - id: bulb_light
         name: ${node_name}

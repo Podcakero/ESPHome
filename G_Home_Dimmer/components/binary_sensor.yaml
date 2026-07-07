@@ -10,13 +10,8 @@ binary_sensor:
             id(button_state) = !id(button_state);
             if (id(button_state)) {
               uint8_t bar = 0x40 | 7;
-              uint8_t dim = 0x80 | 100;
               id(uart_bus).write_array(&bar, 1);
-              delay(14);
-              id(uart_bus).write_array(&dim, 1);
               id(green_led).turn_on();
             } else {
-              uint8_t off = 0x00;
-              id(uart_bus).write_array(&off, 1);
               id(green_led).turn_off();
             }

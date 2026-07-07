@@ -2,25 +2,26 @@
 
 class GHomeDimmerUartSlider : public Component, public UARTDevice {
  public:
-  GHomeDimmerUartSlider(UARTComponent *parent, number::Number *number)
-      : UARTDevice(parent), slider_number(number) {}
+  GHomeDimmerUartSlider(UARTComponent parent, sensor::Sensorsensor)
+      : UARTDevice(parent), slider_sensor(sensor) {}
 
   void setup() override {
     // Sync HA slider state to dimmer on boot
-    float value = id(dimmer_slider).state;
-    if (value <= 0.0f) {
-      uint8_t cmd = 0x7F;
-      write_array(&cmd, 1);
-    } else {
-      int min_cmd = 0x80;
-      int max_cmd = 0xB0;
-      int scaled = int((value / 100.0f) * (max_cmd - min_cmd) + min_cmd + 0.5f);
-      if (scaled > max_cmd) scaled = max_cmd;
-      uint8_t cmd = scaled;
-      write_array(&cmd, 1);
+    if (slider_sensor != nullptr) {
+      float value = slider_sensor->state;
+      if (value <= 0.0f) {
+        uint8_t cmd = 0x7F;
+        write_array(&cmd, 1);
+      } else {
+        int min_cmd = 0x80;
+        int max_cmd = 0xB0;
+        int scaled = int((value / 100.0f) * (max_cmd - min_cmd) + min_cmd + 0.5f);
+        if (scaled > max_cmd) scaled = max_cmd;
+        uint8_t cmd = scaled;
+        write_array(&cmd, 1);
+      }
     }
   }
-
   void loop() override {
     // Keep reading while at least 5 bytes are available
     while (available() >= 5) {
@@ -38,7 +39,9 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
           float percent = (raw_val / 150.0f) * 100.0f;  // approximate 0..100%
           if (percent > 100.0f) percent = 100.0f;
           ESP_LOGI("ghome_uart", "Touch Slider → raw: %d → %.1f%%", raw_val, percent);
-          slider_number->publish_state(percent);
+          if (slider_sensor != nullptr) {
+            slider_sensor->publish_state(percent);
+          }
         }
       } else {
         // Not a valid packet start; drop one byte and continue
@@ -47,7 +50,6 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
     }
   }
 
-
  protected:
-  number::Number *slider_number;
+  sensor::Sensor *slider_sensor;
 };

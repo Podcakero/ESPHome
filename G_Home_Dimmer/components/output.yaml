@@ -4,3 +4,15 @@ output:
       number: P26
       inverted: true
     id: status_led_output
+
+  - platform: template
+    id: output_brightness
+    type: float
+    write_action:
+      if:
+        condition:
+          lambda: return state > 0;
+        then:
+          - number.set: 
+              id: dimmer_slider
+              value: !lambda return state * 100;

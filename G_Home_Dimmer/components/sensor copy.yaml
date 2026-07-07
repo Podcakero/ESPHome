@@ -1,0 +1,27 @@
+sensor:
+  - platform: template
+    id: slider_sensor_lambda
+    name: "Touch Slider Brightness"
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    update_interval: 50ms
+    lambda: |-
+      auto *slider = new GHomeDimmerUartSlider(id(uart_bus));
+      return {slider};
+    on_value:
+      then:
+        - lambda: |-
+            float perc = x;
+            id(output_brightness)->set_level(perc);
+            if (perc <= 0.0f) {
+              uint8_t bar_cmd = 0x41;
+              id(uart_bus).write_array(&bar_cmd, 1);
+              id(green_led).turn_off();
+            } else {
+              int bar_level = int((perc / 100.0f) * 6.0f + 1.0f + 0.5f);
+              if (bar_level < 1) bar_level = 1;
+              if (bar_level > 7) bar_level = 7;
+              uint8_t bar_cmd = 0x40 | bar_level;
+              id(uart_bus).write_array(&bar_cmd, 1);
+              id(green_led).turn_on();
+            }
