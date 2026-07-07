@@ -3,3 +3,4 @@ packages:
 
 substitutions:
   device_type: lamp_post_light
+  icon: "mdi:post-lamp"

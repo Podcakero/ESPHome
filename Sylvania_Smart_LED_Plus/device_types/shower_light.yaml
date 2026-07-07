@@ -3,3 +3,4 @@ packages:
 
 substitutions:
   device_type: shower_light
+  icon: "mdi:shower-head"

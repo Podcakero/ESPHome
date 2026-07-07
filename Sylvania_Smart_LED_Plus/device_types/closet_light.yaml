@@ -3,3 +3,4 @@ packages:
 
 substitutions:
   device_type: closet_light
+  icon: "mdi:dome-light"

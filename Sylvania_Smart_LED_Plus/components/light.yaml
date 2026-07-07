@@ -8,9 +8,10 @@ light:
       light_out->set_white(id(output_white));
       return { light_out };
     lights:
-      - id: bulb_light
+      - id: bulb
         name: ${node_name}
-
+        icon: ${icon}
+      
         # Restore last known state (power/brightness/color) on reboot.
         # If no state is stored yet, default to ON.
         restore_mode: RESTORE_AND_ON

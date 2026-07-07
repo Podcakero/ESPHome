@@ -3,3 +3,4 @@ packages:
 
 substitutions:
   device_type: wall_lamp_light
+  icon: "mdi:coach-lamp"

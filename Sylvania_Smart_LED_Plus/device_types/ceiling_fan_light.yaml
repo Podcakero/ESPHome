@@ -3,3 +3,4 @@ packages:
 
 substitutions:
   device_type: ceiling_fan_light
+  icon: "mdi:ceiling-fan-light"

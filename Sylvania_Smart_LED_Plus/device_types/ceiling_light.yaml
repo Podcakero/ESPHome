@@ -3,3 +3,4 @@ packages:
 
 substitutions:
   device_type: ceiling_light
+  icon: "mdi:light-recessed"

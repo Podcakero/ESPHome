@@ -3,3 +3,4 @@ packages:
 
 substitutions:
   device_type: mirror_light
+  icon: "mdi:mirror-rectangle"

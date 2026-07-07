@@ -1,5 +1,6 @@
 substitutions:
   device_type: generic_light
+  icon: "mdi:lightbulb"
 
 esphome:
   includes:

@@ -3,3 +3,4 @@ packages:
 
 substitutions:
   device_type: lamp_light
+  icon: "mdi:floor-lamp"

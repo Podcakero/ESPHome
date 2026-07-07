@@ -1,1 +1,0 @@
-../esphome.sh upload devices/
