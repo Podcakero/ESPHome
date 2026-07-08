@@ -1,6 +1,6 @@
 custom_component:
   - lambda: |-
-      auto slider = new GHomeDimmerUartSlider(id(uart_bus), id(slider_sensor));
+      auto slider = new GHomeDimmerUartSlider(id(uart_bus), id(slider_sensor), id(switch_light));
       return { slider };
     components:
       - id: slider_component

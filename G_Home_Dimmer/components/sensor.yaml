@@ -29,5 +29,5 @@ sensor:
             if (dim_val < 0) dim_val = 0;
             if (dim_val > 100) dim_val = 100;
             uint8_t dim_cmd = 0x80 | dim_val;
-            esphome::delay(14);
+            delay_microseconds_safe(14000);
             id(uart_bus).write_array(&dim_cmd, 1);

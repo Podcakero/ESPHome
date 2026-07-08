@@ -28,6 +28,6 @@ number:
 
               ESP_LOGD("uart_dimmer", "HA Slider=%.0f%% → LED=0x%02X, DIM=0x%02X", x, bar_cmd, dim_cmd);
               id(uart_bus).write_array(&bar_cmd, 1);
-              esphome::delay(14);
+              delay_microseconds_safe(14000);
               id(uart_bus).write_array(&dim_cmd, 1);
             }

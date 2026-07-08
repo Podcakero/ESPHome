@@ -3,3 +3,8 @@ light:
     id: status_led
     name: "Status LED (Offline)"
     output: status_led_output
+  
+  - platform: monochromatic
+    id: switch_light
+    name: "Switch State"
+    output: switch_light_output

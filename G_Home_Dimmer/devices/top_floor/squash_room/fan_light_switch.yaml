@@ -2,13 +2,6 @@ packages:
   base: !include base.yaml
   device_type: !include ../../../device_types/fake_light_switch.yaml
 
-custom_component:
-  - lambda: |-
-      auto slider = new GHomeDimmerUartSlider(id(uart_bus), id(slider_sensor));
-      return { slider };
-    components:
-      - id: slider_component
-
 substitutions:
   node_name: "fan_light_switch"
   friendly_name: "Squash's Room Ceiling Fan Light Switch"

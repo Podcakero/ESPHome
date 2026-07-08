@@ -13,7 +13,7 @@ binary_sensor:
               uint8_t dim_cmd = 0x80 | 100;    // 0xE4
               ESP_LOGD("offline", "Button → ON: LED=0x%02X, DIM=0x%02X", bar_cmd, dim_cmd);
               id(uart_bus).write_array(&bar_cmd, 1);
-              esphome::delay(14);
+              delay_microseconds_safe(14000);
               id(uart_bus).write_array(&dim_cmd, 1);
               id(green_led).turn_on();
             } else {

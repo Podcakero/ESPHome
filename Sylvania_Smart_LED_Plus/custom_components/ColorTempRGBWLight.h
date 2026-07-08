@@ -60,59 +60,59 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
     last_mode_ = mode;
 
     if (mode == light::ColorMode::COLOR_TEMPERATURE) {
-  // White balance (CT) with 3000K white at max, RGB assists
-  float mired = state->current_values.get_color_temperature();
-  mired = clamp(mired, min_mired_, max_mired_);
+      // White balance (CT) with 3000K white at max, RGB assists
+      float mired = state->current_values.get_color_temperature();
+      mired = clamp(mired, min_mired_, max_mired_);
 
-  float br = 1.0f;
-  state->current_values_as_brightness(&br);
-  br = clamp(br, 0.0f, 1.0f);
+      float br = 1.0f;
+      state->current_values_as_brightness(&br);
+      br = clamp(br, 0.0f, 1.0f);
 
-  // White stays pegged to main brightness
-  float w = br;
+      // White stays pegged to main brightness
+      float w = br;
 
-  // Compare target CT to native white (3000K ~= 333 mired)
-  const float WHITE_K = 3000.0f;
-  const float WHITE_MIRED = 1e6f / WHITE_K;  // ~333
-  float xw = clamp((WHITE_MIRED - min_mired_) / (max_mired_ - min_mired_), 0.0f, 1.0f);
-  float x  = clamp((mired       - min_mired_) / (max_mired_ - min_mired_), 0.0f, 1.0f);
+      // Compare target CT to native white (3000K ~= 333 mired)
+      const float WHITE_K = 3000.0f;
+      const float WHITE_MIRED = 1e6f / WHITE_K;  // ~333
+      float xw = clamp((WHITE_MIRED - min_mired_) / (max_mired_ - min_mired_), 0.0f, 1.0f);
+      float x  = clamp((mired       - min_mired_) / (max_mired_ - min_mired_), 0.0f, 1.0f);
 
-  float delta = x - xw;
-  float warm_strength = (delta > 0.0f) ? (delta / (1.0f - xw)) : 0.0f;
-  float cool_strength = (delta < 0.0f) ? (-delta / (xw > 0 ? xw : 1.0f)) : 0.0f;
+      float delta = x - xw;
+      float warm_strength = (delta > 0.0f) ? (delta / (1.0f - xw)) : 0.0f;
+      float cool_strength = (delta < 0.0f) ? (-delta / (xw > 0 ? xw : 1.0f)) : 0.0f;
 
-  // Gentle curve so small moves don't over-tint
-  const float curve = 1.15f;
-  warm_strength = std::pow(warm_strength, curve);
-  cool_strength = std::pow(cool_strength, curve);
+      // Gentle curve so small moves don't over-tint
+      const float curve = 1.15f;
+      warm_strength = std::pow(warm_strength, curve);
+      cool_strength = std::pow(cool_strength, curve);
 
-  // Tuning: warm = red (+ tiny green), cool = cyan (more green than blue)
-  const float WARM_R_GAIN = 1.00f;
-  const float WARM_G_GAIN = 0.10f;
+      // Tuning: warm = red (+ tiny green), cool = cyan (more green than blue)
+      const float WARM_R_GAIN = 1.00f;
+      const float WARM_G_GAIN = 0.10f;
 
-  const float COOL_GAIN      = 1.00f; // overall cool tint
-  const float COOL_CYAN_BIAS = 0.70f; // 0..1: portion of cool tint sent to GREEN
-  const float ANTI_MAGENTA   = 0.20f; // extra green as it gets cooler
+      const float COOL_GAIN      = 1.00f; // overall cool tint
+      const float COOL_CYAN_BIAS = 0.70f; // 0..1: portion of cool tint sent to GREEN
+      const float ANTI_MAGENTA   = 0.20f; // extra green as it gets cooler
 
-  float r = br * (WARM_R_GAIN * warm_strength);
-  float g = br * (WARM_G_GAIN * warm_strength
-                + COOL_GAIN * cool_strength * (COOL_CYAN_BIAS * (1.0f + ANTI_MAGENTA * cool_strength)));
-  float b = br * (COOL_GAIN * cool_strength * (1.0f - COOL_CYAN_BIAS));
+      float r = br * (WARM_R_GAIN * warm_strength);
+      float g = br * (WARM_G_GAIN * warm_strength
+                    + COOL_GAIN * cool_strength * (COOL_CYAN_BIAS * (1.0f + ANTI_MAGENTA * cool_strength)));
+      float b = br * (COOL_GAIN * cool_strength * (1.0f - COOL_CYAN_BIAS));
 
-  r = clamp(r, 0.0f, 1.0f);
-  g = clamp(g, 0.0f, 1.0f);
-  b = clamp(b, 0.0f, 1.0f);
-  w = clamp(w, 0.0f, 1.0f);
+      r = clamp(r, 0.0f, 1.0f);
+      g = clamp(g, 0.0f, 1.0f);
+      b = clamp(b, 0.0f, 1.0f);
+      w = clamp(w, 0.0f, 1.0f);
 
-  if (red_)   red_->set_level(r);
-  if (green_) green_->set_level(g);
-  if (blue_)  blue_->set_level(b);
-  if (white_) white_->set_level(w);
+      if (red_)   red_->set_level(r);
+      if (green_) green_->set_level(g);
+      if (blue_)  blue_->set_level(b);
+      if (white_) white_->set_level(w);
 
-  color_temp_ = mired;
-  brightness_ = br;
-  return;
-}
+      color_temp_ = mired;
+      brightness_ = br;
+      return;
+    }
 
 
     // --- Color wheel mode (RGB/HS) ---

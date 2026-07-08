@@ -4,3 +4,32 @@ output:
       number: P26
       inverted: true
     id: status_led_output
+  
+  - platform: template
+    type: float
+    id: switch_light_output
+    write_action:
+      - lambda: |-
+            float perc = x;
+            id(dimmer_slider).publish_state(perc);
+
+            if (perc <= 0.0f) {
+              // Bar = 1 for “zero” → 0x41
+              uint8_t bar_cmd = 0x40 | 1;
+              id(uart_bus).write_array(&bar_cmd, 1);
+              id(green_led).turn_off();
+            } else {
+              int bar_level = int((perc / 100.0f) * 6.0f + 1.0f + 0.5f);
+              if (bar_level < 1) bar_level = 1;
+              if (bar_level > 7) bar_level = 7;
+              uint8_t bar_cmd = 0x40 | bar_level;
+              id(uart_bus).write_array(&bar_cmd, 1);
+              id(green_led).turn_on();
+            }
+
+            int dim_val = int(perc + 0.5f);
+            if (dim_val < 0) dim_val = 0;
+            if (dim_val > 100) dim_val = 100;
+            uint8_t dim_cmd = 0x80 | dim_val;
+            delay_microseconds_safe(14000);
+            id(uart_bus).write_array(&dim_cmd, 1);
