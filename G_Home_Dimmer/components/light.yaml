@@ -1,10 +1,5 @@
 light:
   - platform: binary
     id: status_led
-    name: "Status LED"
+    name: "Status LED (Offline)"
     output: status_led_output
-
-  - platform: monochromatic
-    id: dimmer_light
-    name: "Dimmer Slider Light"
-    output: output_brightness

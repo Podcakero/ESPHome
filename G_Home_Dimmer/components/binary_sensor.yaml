@@ -3,15 +3,22 @@ binary_sensor:
     pin:
       number: P9
       inverted: true
-    name: "Physical Button"
+    name: "Physical Button (Offline)"
     on_press:
       then:
         - lambda: |-
             id(button_state) = !id(button_state);
             if (id(button_state)) {
-              uint8_t bar = 0x40 | 7;
-              id(uart_bus).write_array(&bar, 1);
+              uint8_t bar_cmd = 0x40 | 7;      // 0x47
+              uint8_t dim_cmd = 0x80 | 100;    // 0xE4
+              ESP_LOGD("offline", "Button → ON: LED=0x%02X, DIM=0x%02X", bar_cmd, dim_cmd);
+              id(uart_bus).write_array(&bar_cmd, 1);
+              esphome::delay(14);
+              id(uart_bus).write_array(&dim_cmd, 1);
               id(green_led).turn_on();
             } else {
+              uint8_t off_cmd = 0x00;
+              ESP_LOGD("offline", "Button → OFF: 0x00");
+              id(uart_bus).write_array(&off_cmd, 1);
               id(green_led).turn_off();
             }

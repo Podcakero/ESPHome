@@ -1,9 +1,5 @@
 packages:
-  base: !include
-    file: base.yaml
-    vars:
-      api_key: !secret ceiling_fan_light_switch_api_key
-      ota_password: !secret ceiling_fan_light_switch_ota_password
+  base: !include base.yaml
   device_type: !include ../../../device_types/fake_light_switch.yaml
 
 custom_component:

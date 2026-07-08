@@ -4,5 +4,4 @@ switch:
       number: P24
       inverted: true
     id: green_led
-    name: "Green LED"
-    restore_mode: ALWAYS_OFF
+    name: "Green LED (Offline)"

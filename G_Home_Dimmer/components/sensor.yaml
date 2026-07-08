@@ -1,7 +1,7 @@
 sensor:
   - platform: template
     id: slider_sensor
-    name: "Touch Slider Brightness"
+    name: "Touch Slider Brightness (Offline)"
     unit_of_measurement: "%"
     accuracy_decimals: 0
     update_interval: 50ms
@@ -9,8 +9,11 @@ sensor:
       then:
         - lambda: |-
             float perc = x;
+            id(dimmer_slider).publish_state(perc);
+
             if (perc <= 0.0f) {
-              uint8_t bar_cmd = 0x41;
+              // Bar = 1 for “zero” → 0x41
+              uint8_t bar_cmd = 0x40 | 1;
               id(uart_bus).write_array(&bar_cmd, 1);
               id(green_led).turn_off();
             } else {
@@ -21,3 +24,10 @@ sensor:
               id(uart_bus).write_array(&bar_cmd, 1);
               id(green_led).turn_on();
             }
+
+            int dim_val = int(perc + 0.5f);
+            if (dim_val < 0) dim_val = 0;
+            if (dim_val > 100) dim_val = 100;
+            uint8_t dim_cmd = 0x80 | dim_val;
+            esphome::delay(14);
+            id(uart_bus).write_array(&dim_cmd, 1);
