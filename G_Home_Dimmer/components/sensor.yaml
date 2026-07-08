@@ -2,6 +2,7 @@ sensor:
   - platform: template
     id: slider_sensor
     name: "Touch Slider Brightness (Offline)"
+    internal: true
     unit_of_measurement: "%"
     accuracy_decimals: 0
     update_interval: 50ms

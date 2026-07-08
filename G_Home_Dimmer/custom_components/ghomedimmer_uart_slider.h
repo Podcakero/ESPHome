@@ -2,8 +2,8 @@
 
 class GHomeDimmerUartSlider : public Component, public UARTDevice {
  public:
-  GHomeDimmerUartSlider(uart::UARTComponent *parent, sensor::Sensor *sensor, light::LightState *light_state)
-      : UARTDevice(parent), slider_sensor(sensor), switch_light_state(light_state) {}
+  GHomeDimmerUartSlider(uart::UARTComponent *parent, sensor::Sensor *sensor, light::LightState *light)
+      : UARTDevice(parent), slider_sensor(sensor), switch_light(light) {}
 
   void setup() override {
     /*
@@ -25,15 +25,16 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
     */
 
     // Sync HA light state to dimmer on boot
-    if (switch_light_state != nullptr) {
-      float value = switch_light_state->state;
-      if (value <= 0.0f) {
+    if (switch_light != nullptr) {
+      float state = switch_light->current_values.get_state();
+      float brightness = switch_light->current_values.get_brightness();
+      if (state != 1.0f || brightness <= 0.0f) {
         uint8_t cmd = 0x7F;
         write_array(&cmd, 1);
       } else {
         int min_cmd = 0x80;
         int max_cmd = 0xB0;
-        int scaled = int((value / 100.0f) * (max_cmd - min_cmd) + min_cmd + 0.5f);
+        int scaled = int(brightness * (max_cmd - min_cmd) + min_cmd + 0.5f);
         if (scaled > max_cmd) scaled = max_cmd;
         uint8_t cmd = scaled;
         write_array(&cmd, 1);
@@ -54,16 +55,21 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
         // Valid touch packet if byte2==0x01 and byte4==0x23
         if (data[2] == 0x01 && data[4] == 0x23) {
           int raw_val = data[1];  // ranges roughly 0x01..0x96
-          float percent = (raw_val / 150.0f) * 100.0f;  // approximate 0..100%
-          if (percent > 100.0f) percent = 100.0f;
-          ESP_LOGI("ghome_uart", "Touch Slider → raw: %d → %.1f%%", raw_val, percent);
+          float brightness = raw_val / 150.0f;  // approximate 0..100%
+          if (brightness > 1.0f) brightness = 1.0f;
+          ESP_LOGI("ghome_uart", "Touch Slider → raw: %d → %.1f%%", raw_val, brightness * 100.0f);
           /*
           if (slider_sensor != nullptr) {
             slider_sensor->publish_state(percent);
           }
           */
-          if (switch_light_state != nullptr) {
-            switch_light_state->publish_state(percent);
+          if (switch_light != nullptr) {
+            switch_light->current_values_as_brightness(&brightness);
+            if (brightness <= 0.0f) {
+              switch_light->turn_off();
+            } else {
+              switch_light->turn_on();
+            }
           }
         }
       } else {
@@ -75,5 +81,5 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
 
  protected:
   sensor::Sensor *slider_sensor;
-  light::LightState *switch_light_state;
+  light::LightState *switch_light;
 };

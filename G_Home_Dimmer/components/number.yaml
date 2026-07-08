@@ -1,7 +1,8 @@
 number:
   - platform: template
-    name: "Dimmer Level (Offline)"
     id: dimmer_slider
+    name: "Dimmer Level (Offline)"
+    internal: true
     icon: mdi:lightbulb
     optimistic: true
     restore_value: true

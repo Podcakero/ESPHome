@@ -2,6 +2,7 @@ light:
   - platform: binary
     id: status_led
     name: "Status LED (Offline)"
+    internal: true
     output: status_led_output
   
   - platform: monochromatic

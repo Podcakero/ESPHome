@@ -1,9 +1,11 @@
 binary_sensor:
   - platform: gpio
+    id: button
+    name: "Physical Button (Offline)"
+    internal: true
     pin:
       number: P9
       inverted: true
-    name: "Physical Button (Offline)"
     on_press:
       then:
         - lambda: |-

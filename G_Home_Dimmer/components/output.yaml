@@ -1,35 +1,38 @@
 output:
   - platform: gpio
+    id: status_led_output
     pin:
       number: P26
       inverted: true
-    id: status_led_output
   
   - platform: template
-    type: float
     id: switch_light_output
+    type: float
     write_action:
       - lambda: |-
-            float perc = x;
+            float perc = pow(state, 1.0/2.8) * 100.0f;
             id(dimmer_slider).publish_state(perc);
 
+            uint8_t bar_cmd = 0.0f;
             if (perc <= 0.0f) {
               // Bar = 1 for “zero” → 0x41
-              uint8_t bar_cmd = 0x40 | 1;
+              bar_cmd = 0x40 | 1;
               id(uart_bus).write_array(&bar_cmd, 1);
               id(green_led).turn_off();
             } else {
               int bar_level = int((perc / 100.0f) * 6.0f + 1.0f + 0.5f);
               if (bar_level < 1) bar_level = 1;
               if (bar_level > 7) bar_level = 7;
-              uint8_t bar_cmd = 0x40 | bar_level;
+              bar_cmd = 0x40 | bar_level;
               id(uart_bus).write_array(&bar_cmd, 1);
               id(green_led).turn_on();
             }
 
-            int dim_val = int(perc + 0.5f);
+            int dim_val = int((perc / 100.0f) + 0.5f);
             if (dim_val < 0) dim_val = 0;
             if (dim_val > 100) dim_val = 100;
             uint8_t dim_cmd = 0x80 | dim_val;
             delay_microseconds_safe(14000);
             id(uart_bus).write_array(&dim_cmd, 1);
+
+            ESP_LOGD("uart_dimmer", "HA SWitch Light=%f%% → LED=0x%02X, DIM=0x%02X", perc, bar_cmd, dim_cmd);
