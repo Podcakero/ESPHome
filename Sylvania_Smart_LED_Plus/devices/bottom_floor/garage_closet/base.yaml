@@ -1,0 +1,6 @@
+packages:
+  floor_base: !include ../base.yaml
+
+substitutions:
+  area: "grg_clst"
+  dns_area: "grg-clst"

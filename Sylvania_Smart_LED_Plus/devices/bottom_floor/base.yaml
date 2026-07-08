@@ -1,9 +1,5 @@
 packages:
-  device_base: !include
-    file: ../base.yaml
-    vars:
-      api_key: ${api_key}
-      ota_password: ${ota_password}
+  device_base: !include ../base.yaml
 
 substitutions:
   floor: "bottom floor"

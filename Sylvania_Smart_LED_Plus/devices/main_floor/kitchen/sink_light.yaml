@@ -1,12 +1,8 @@
 packages:
-  base: !include
-    file: base.yaml
-    vars:
-      api_key: !secret sink_light_api_key
-      ota_password: !secret sink_light_ota_password
+  base: !include base.yaml
   device_type: !include ../../../device_types/ceiling_light.yaml
 
 substitutions:
   node_name: "sink_light"
-  friendly_name: "Kitchen Sink Light"
+  friendly_name: "Kitchen Sink"
   dns_name: "sink-light"

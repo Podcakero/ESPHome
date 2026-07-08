@@ -1,12 +1,8 @@
 packages:
-  base: !include
-    file: base.yaml
-    vars:
-      api_key: !secret mirror_light_01_api_key
-      ota_password: !secret mirror_light_01_ota_password
+  base: !include base.yaml
   device_type: !include ../../../device_types/mirror_light.yaml
 
 substitutions:
   node_name: "mirror_light_01"
-  friendly_name: "Grey's Bathroom Mirror Light"
+  friendly_name: "Grey's Bathroom Mirror"
   dns_name: "mirror-light-01"
