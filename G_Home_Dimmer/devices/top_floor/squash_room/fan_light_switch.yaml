@@ -4,5 +4,5 @@ packages:
 
 substitutions:
   node_name: "fan_light_switch"
-  friendly_name: "Squash's Room Ceiling Fan Light Switch"
+  friendly_name: "Squash's Room Ceiling Fan"
   dns_name: "fan-light-switch"

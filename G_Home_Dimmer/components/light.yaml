@@ -7,5 +7,6 @@ light:
   
   - platform: monochromatic
     id: switch_light
-    name: "Switch"
+    name: ${node_name}
+    icon: ${icon}
     output: switch_light_output

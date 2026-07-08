@@ -3,3 +3,4 @@ packages:
 
 substitutions:
   device_type: fake_light_switch
+  icon: "mdi:light-switch"
