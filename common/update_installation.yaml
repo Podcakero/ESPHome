@@ -1,7 +1,7 @@
 ota:
   - platform: esphome
     id: esphome_ota
-    password: ${ota_password}
+    encryption:
     on_begin:
       then:
         - logger.log: 
