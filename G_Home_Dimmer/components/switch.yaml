@@ -2,7 +2,7 @@ switch:
   - platform: gpio
     id: green_led
     name: "Green LED (Offline)"
-    internal: true
+#    internal: true
     pin:
       number: P24
       inverted: true

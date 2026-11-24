@@ -12,13 +12,14 @@ output:
       - lambda: |-
             float perc = pow(state, 1.0/2.8) * 100.0f;
             id(dimmer_slider).publish_state(perc);
-
+            
             uint8_t bar_cmd = 0.0f;
-            if (perc <= 0.0f) {
+            if (perc <= 5.0f) {
               // Bar = 1 for “zero” → 0x41
               bar_cmd = 0x40 | 1;
               id(uart_bus).write_array(&bar_cmd, 1);
               id(green_led).turn_off();
+              id(button_state) = false;
             } else {
               int bar_level = int((perc / 100.0f) * 6.0f + 1.0f + 0.5f);
               if (bar_level < 1) bar_level = 1;
@@ -26,6 +27,7 @@ output:
               bar_cmd = 0x40 | bar_level;
               id(uart_bus).write_array(&bar_cmd, 1);
               id(green_led).turn_on();
+              id(button_state) = true;
             }
 
             int dim_val = int((perc / 100.0f) + 0.5f);

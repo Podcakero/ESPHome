@@ -1,9 +1,11 @@
 #include "esphome.h"
 
+ESPHOME_LOG_TAG(TAG, "ghome_uart");
+
 class GHomeDimmerUartSlider : public Component, public UARTDevice {
  public:
-  GHomeDimmerUartSlider(uart::UARTComponent *parent, sensor::Sensor *sensor, light::LightState *light)
-      : UARTDevice(parent), slider_sensor(sensor), switch_light(light) {}
+  GHomeDimmerUartSlider(uart::UARTComponent *parent, light::LightState *light)
+      : UARTDevice(parent), switch_light(light) {}
 
   void setup() override {
     /*
@@ -41,6 +43,7 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
       }
     }
   }
+
   void loop() override {
     // Keep reading while at least 5 bytes are available
     while (available() >= 5) {
@@ -49,7 +52,7 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
         uint8_t data[5];
         read_array(data, 5);
 
-        ESP_LOGD("ghome_uart", "Received raw UART: %02X %02X %02X %02X %02X",
+        ESP_LOGD(TAG, "Received raw UART: %02X %02X %02X %02X %02X",
                  data[0], data[1], data[2], data[3], data[4]);
 
         // Valid touch packet if byte2==0x01 and byte4==0x23
@@ -57,19 +60,22 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
           int raw_val = data[1];  // ranges roughly 0x01..0x96
           float brightness = raw_val / 150.0f;  // approximate 0..100%
           if (brightness > 1.0f) brightness = 1.0f;
-          ESP_LOGI("ghome_uart", "Touch Slider → raw: %d → %.1f%%", raw_val, brightness * 100.0f);
+          ESP_LOGI(TAG, "Touch Slider → raw: %d → %.1f%%", raw_val, brightness * 100.0f);
           /*
           if (slider_sensor != nullptr) {
             slider_sensor->publish_state(percent);
           }
           */
           if (switch_light != nullptr) {
-            switch_light->current_values_as_brightness(&brightness);
-            if (brightness <= 0.0f) {
-              switch_light->turn_off();
+            auto call = switch_light->make_call();
+            if (brightness <= 0.05f) {
+              call.set_state(false);
             } else {
-              switch_light->turn_on();
+              call.set_brightness(brightness);
+              call.set_state(true);
             }
+            call.perform();
+            //switch_light->publish_state();
           }
         }
       } else {
@@ -80,6 +86,5 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
   }
 
  protected:
-  sensor::Sensor *slider_sensor;
   light::LightState *switch_light;
 };

@@ -10,3 +10,4 @@ light:
     name: ${node_name}
     icon: ${icon}
     output: switch_light_output
+    default_transition_length: 1ms
