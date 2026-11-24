@@ -1,1 +1,1 @@
-./esphome.sh upload
+./esphome.sh upload $1

@@ -1,1 +1,1 @@
-./esphome.sh clean
+./esphome.sh clean $1
