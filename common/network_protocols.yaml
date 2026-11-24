@@ -3,7 +3,7 @@ network:
 
 api:
   encryption:
-    key: ${api_key}
+    key: !secret api_key
 
 mdns:
   disabled: true

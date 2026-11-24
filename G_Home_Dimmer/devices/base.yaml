@@ -1,15 +1,9 @@
 packages:
   esphome: !include ../../common/esphome.yaml
   network_hardware: !include ../../common/network_hardware.yaml
-  network_protocols: !include
-    file: ../../common/network_protocols.yaml
-    vars:
-      api_key: !secret api_key
+  network_protocols: !include ../../common/network_protocols.yaml
   management_and_monitoring: !include ../../common/management_and_monitoring.yaml
-  update_installation: !include
-    file: ../../common/update_installation.yaml
-    vars:
-      ota_password: !secret ota_password
+  update_installation: !include ../../common/update_installation.yaml
   factory_reset: !include ../../common/factory_reset.yaml
   binary_sensor: !include ../components/binary_sensor.yaml
   custom_component: !include ../components/custom_component.yaml
