@@ -1,7 +1,5 @@
-custom_component:
-  - lambda: |-
-      auto *slider = new GHomeDimmerUartSlider(id(uart_bus), id(switch_light));
-      App.register_component_(slider);
-      return { slider };
-    components:
-      - id: slider_component
+# GHome Dimmer UART Slider external component configuration
+ghome_dimmer_uart_slider:
+  id: slider_component
+  uart_id: uart_bus
+  switch_light: switch_light

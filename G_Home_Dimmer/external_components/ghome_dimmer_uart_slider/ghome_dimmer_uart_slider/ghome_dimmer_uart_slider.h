@@ -1,35 +1,27 @@
-#include "esphome.h"
+#pragma once
 
-ESPHOME_LOG_TAG(TAG, "ghome_uart");
+#include "esphome/core/component.h"
+#include "esphome/components/uart/uart.h"
+#include "esphome/components/light/light_state.h"
 
-class GHomeDimmerUartSlider : public Component, public UARTDevice {
+namespace esphome {
+namespace ghome_dimmer_uart_slider {
+
+#define TAG "ghome_uart"
+
+class GHomeDimmerUartSlider : public Component, public uart::UARTDevice {
  public:
-  GHomeDimmerUartSlider(uart::UARTComponent *parent, light::LightState *light)
-      : UARTDevice(parent), switch_light(light) {}
+  GHomeDimmerUartSlider() = default;
+  
+  void set_switch_light(light::LightState *light) { switch_light_ = light; }
 
   void setup() override {
-    /*
-    // Sync HA slider state to dimmer on boot
-    if (slider_sensor != nullptr) {
-      float value = slider_sensor->state;
-      if (value <= 0.0f) {
-        uint8_t cmd = 0x7F;
-        write_array(&cmd, 1);
-      } else {
-        int min_cmd = 0x80;
-        int max_cmd = 0xB0;
-        int scaled = int((value / 100.0f) * (max_cmd - min_cmd) + min_cmd + 0.5f);
-        if (scaled > max_cmd) scaled = max_cmd;
-        uint8_t cmd = scaled;
-        write_array(&cmd, 1);
-      }
-    }
-    */
-
+    ESP_LOGI(TAG, "Setting up GHome Dimmer UART Slider");
+    
     // Sync HA light state to dimmer on boot
-    if (switch_light != nullptr) {
-      float state = switch_light->current_values.get_state();
-      float brightness = switch_light->current_values.get_brightness();
+    if (switch_light_ != nullptr) {
+      float state = switch_light_->current_values.get_state();
+      float brightness = switch_light_->current_values.get_brightness();
       if (state != 1.0f || brightness <= 0.0f) {
         uint8_t cmd = 0x7F;
         write_array(&cmd, 1);
@@ -42,6 +34,10 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
         write_array(&cmd, 1);
       }
     }
+  }
+
+  void dump_config() override {
+    ESP_LOGCONFIG(TAG, "GHome Dimmer UART Slider");
   }
 
   void loop() override {
@@ -61,13 +57,9 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
           float brightness = raw_val / 150.0f;  // approximate 0..100%
           if (brightness > 1.0f) brightness = 1.0f;
           ESP_LOGI(TAG, "Touch Slider → raw: %d → %.1f%%", raw_val, brightness * 100.0f);
-          /*
-          if (slider_sensor != nullptr) {
-            slider_sensor->publish_state(percent);
-          }
-          */
-          if (switch_light != nullptr) {
-            auto call = switch_light->make_call();
+          
+          if (switch_light_ != nullptr) {
+            auto call = switch_light_->make_call();
             if (brightness <= 0.05f) {
               call.set_state(false);
             } else {
@@ -75,7 +67,6 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
               call.set_state(true);
             }
             call.perform();
-            //switch_light->publish_state();
           }
         }
       } else {
@@ -86,5 +77,8 @@ class GHomeDimmerUartSlider : public Component, public UARTDevice {
   }
 
  protected:
-  light::LightState *switch_light;
+  light::LightState *switch_light_{nullptr};
 };
+
+}  // namespace ghome_dimmer_uart_slider
+}  // namespace esphome

@@ -6,7 +6,6 @@ packages:
   update_installation: !include ../../common/update_installation.yaml
   factory_reset: !include ../../common/factory_reset.yaml
   binary_sensor: !include ../components/binary_sensor.yaml
-  custom_component: !include ../components/custom_component.yaml
   globals: !include ../components/globals.yaml
   interval: !include ../components/interval.yaml
   light: !include ../components/light.yaml
@@ -14,6 +13,7 @@ packages:
   output: !include ../components/output.yaml
   switch: !include ../components/switch.yaml
   uart: !include ../components/uart.yaml
+  ghome_dimmer_uart_slider: !include ../components/custom_component.yaml
 
 wifi:
   use_address: "${dns_area}-${dns_name}"

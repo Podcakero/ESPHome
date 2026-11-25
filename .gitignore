@@ -6,3 +6,4 @@ secrets.yaml
 *.uf2
 *.tar
 *.tar.gz
+__pycache__

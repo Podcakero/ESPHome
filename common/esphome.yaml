@@ -7,6 +7,6 @@ captive_portal:
 
 external_components:
   - source:
-      type: git
-      url: https://github.com/robertklep/esphome-custom-component
-    components: [ custom, custom_component ]
+      type: local
+      path: ../G_Home_Dimmer/external_components/ghome_dimmer_uart_slider
+    components: [ ghome_dimmer_uart_slider ]
