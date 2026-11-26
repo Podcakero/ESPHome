@@ -10,3 +10,9 @@ packages:
 
 wifi:
   use_address: "${dns_area}-${dns_name}"
+
+external_components:
+  - source:
+      type: local
+      path: ../../../external_components/color_temp_rgbw_light
+    components: [ color_temp_rgbw_light ]

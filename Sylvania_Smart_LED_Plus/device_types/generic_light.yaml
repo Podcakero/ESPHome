@@ -2,9 +2,5 @@ substitutions:
   device_type: generic_light
   icon: "mdi:lightbulb"
 
-esphome:
-  includes:
-    - ../../../custom_components/ColorTempRGBWLight.h
-
 bk72xx:
   board: generic-bk7231t-qfn32-tuya
