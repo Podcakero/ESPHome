@@ -1,37 +1,38 @@
 output:
+  # NOTE: no min_power here. In linear PWM-duty space a 10% floor corresponds to
+  # roughly 45% of the brightness slider, which made the whole lower half of the
+  # slider do nothing. The bulbs need a short burst at ~25% duty to ignite when
+  # they are cold; that is handled by the low-brightness kickstart in the
+  # color_temp_rgbw_light component, so the duty can follow the slider all the
+  # way down.
   - platform: libretiny_pwm
     id: output_red
     pin: P7
     frequency: 5000 Hz
-    # RGB LEDs do not turn on below 25%
     max_power: 100%
-    min_power: 25%
     zero_means_zero: true
 
   - platform: libretiny_pwm
     id: output_green
     pin: P8
     frequency: 5000 Hz
-    # RGB LEDs do not turn on below 25%
     max_power: 100%
-    min_power: 25%
     zero_means_zero: true
 
   - platform: libretiny_pwm
     id: output_blue
     pin: P9
     frequency: 5000 Hz
-    # RGB LEDs do not turn on below 25%
     max_power: 100%
-    min_power: 25%
     zero_means_zero: true
 
   - platform: libretiny_pwm
     id: output_white
     pin: P24
     frequency: 5000 Hz
-    # 100% power overdrives the LEDs, so set max power to 80%
-    # White LED does not turn on below 10%
+    # 100% power overdrives the LEDs, so set max power to 80%.
+    # This only scales the white channel's absolute duty; the color_temp_rgbw_light
+    # component scales the RGB tint channels with the same brightness level, so the
+    # color temperature does not shift with brightness.
     max_power: 80%
-    min_power: 15%
     zero_means_zero: true
