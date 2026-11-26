@@ -4,6 +4,11 @@ light:
     name: ${node_name}
     icon: ${icon}
 
+    # These bulbs stop dimming (and stop lighting up) below 15% of the slider,
+    # so map HA 0% onto that minimum: the full 0-100% slider now spans the range
+    # the bulbs can actually produce, without a flat dead zone at the bottom.
+    min_brightness: 15%
+
     # Restore last known state (power/brightness/color) on reboot.
     # If no state is stored yet, default to ON.
     restore_mode: RESTORE_AND_ON

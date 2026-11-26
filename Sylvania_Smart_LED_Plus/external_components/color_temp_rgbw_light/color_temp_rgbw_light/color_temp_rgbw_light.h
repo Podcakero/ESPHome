@@ -18,11 +18,10 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
   static constexpr float max_mired_ = 500.0f;  // ~2000K
   static constexpr float min_mired_ = 153.0f;  // ~6500K
 
-  // Low-brightness kickstart: on an off -> on transition below
-  // STARTUP_THRESHOLD (perceptual slider position) the LEDs are briefly driven
-  // at STARTUP_LEVEL so the driver ignites, then they dim to the target level.
-  static constexpr float STARTUP_THRESHOLD = 0.25f;  // 25% of the HA slider
-  static constexpr float STARTUP_LEVEL = 0.30f;      // PWM level (~25% duty with max_power 80%)
+  // Low-brightness kickstart: when a turn-on targets a PWM level below what the
+  // driver needs to ignite, briefly drive the LEDs at STARTUP_LEVEL and then dim
+  // down to the target level from loop().
+  static constexpr float STARTUP_LEVEL = 0.30f;  // PWM level (~25% duty with max_power 80%)
   static constexpr uint32_t STARTUP_DELAY_MS = 200;
 
   // output_white uses max_power: 80% in the YAML while the RGB outputs use 100%.
@@ -38,6 +37,7 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
       : red_(nullptr), green_(nullptr), blue_(nullptr), white_(nullptr),
         color_temp_(-1.0f), brightness_(-1.0f), last_mode_(light::ColorMode::UNKNOWN),
         light_state_(nullptr), startup_timer_(0), startup_pending_(false), was_on_(false),
+        min_brightness_(0.0f),
         // linear CT -> channel coefficients (warmer = redder, not yellow)
         br_(0.00f), cr_(1.25f),
         bg_(-0.05f), cg_(0.20f),
@@ -50,6 +50,12 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
   void set_blue(output::FloatOutput *blue) { blue_ = blue; }
   void set_white(output::FloatOutput *white) { white_ = white; }
 
+  /// Brightness (0..1) that the bottom of the Home Assistant slider maps to.
+  /// Use this when the hardware cannot dim below a certain point: with 15%,
+  /// HA 0% produces the same output that 15% of the slider used to produce and
+  /// 100% still means full power.
+  void set_min_brightness(float min_brightness) { min_brightness_ = clamp(min_brightness, 0.0f, 0.95f); }
+
   void setup() override {}
 
   void dump_config() override {
@@ -59,6 +65,8 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
     if (blue_ != nullptr) ESP_LOGCONFIG("ColorTempRGBWLight", "  Blue output attached");
     if (white_ != nullptr) ESP_LOGCONFIG("ColorTempRGBWLight", "  White output attached");
     ESP_LOGCONFIG("ColorTempRGBWLight", "  Modes: RGB (color wheel) + COLOR_TEMPERATURE (white balance)");
+    ESP_LOGCONFIG("ColorTempRGBWLight", "  Brightness range: %.0f%% - 100%% (HA slider 0%% - 100%%)",
+                  min_brightness_ * 100.0f);
     ESP_LOGCONFIG("ColorTempRGBWLight", "  Low brightness startup: kickstart at level %.2f for %ums",
                   STARTUP_LEVEL, (unsigned) STARTUP_DELAY_MS);
   }
@@ -75,12 +83,9 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
     light_state_ = state;
     const light::LightColorValues &values = state->current_values;
 
-    // Perceptual (0..1) brightness as reported by Home Assistant.
-    float raw = clamp(values.get_state() * values.get_brightness() * values.get_color_brightness(), 0.0f, 1.0f);
-    // Gamma is applied exactly ONCE. This is ESPHome's standard mapping from the
-    // brightness slider to the linear PWM duty cycle; applying it a second time
-    // pushes almost the whole slider range onto the outputs' minimum power.
-    float level = state->gamma_correct_lut(raw);
+    // Linear PWM level for the requested brightness (gamma applied exactly once,
+    // ESPHome's standard slider -> duty mapping).
+    float level = this->brightness_to_level_(state, values);
     bool is_on = values.is_on();
 
     if (!is_on) {
@@ -95,15 +100,14 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
     bool turned_on = !was_on_;
     was_on_ = true;
 
-    ESP_LOGD(TAG, "write_state: state=%.0f brightness=%.3f color_brightness=%.3f raw=%.3f level=%.3f "
+    ESP_LOGD(TAG, "write_state: state=%.0f brightness=%.3f color_brightness=%.3f min=%.3f level=%.3f "
                   "mode=%d turned_on=%d",
-             values.get_state(), values.get_brightness(), values.get_color_brightness(), raw, level,
+             values.get_state(), values.get_brightness(), values.get_color_brightness(), min_brightness_, level,
              (int) values.get_color_mode(), (int) turned_on);
 
-    if (turned_on && raw < STARTUP_THRESHOLD) {
-      // Turning on below the minimum reliable level: drive the LEDs at the
-      // startup level first so they actually ignite, then dim in loop().
-      // raw may be exactly 0 on the first frame of a turn-on transition.
+    // Below the level the driver needs to ignite the LEDs: blip first, then dim.
+    if (turned_on && level < STARTUP_LEVEL) {
+      // level may be exactly 0 on the first frame of a turn-on transition.
       startup_pending_ = true;
       startup_timer_ = millis();
       apply_channels_(state, STARTUP_LEVEL, true);
@@ -124,9 +128,7 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
     if (light_state_ == nullptr || !light_state_->current_values.is_on())
       return;
 
-    const light::LightColorValues &values = light_state_->current_values;
-    float raw = clamp(values.get_state() * values.get_brightness() * values.get_color_brightness(), 0.0f, 1.0f);
-    apply_channels_(light_state_, light_state_->gamma_correct_lut(raw), false);
+    apply_channels_(light_state_, this->brightness_to_level_(light_state_, light_state_->current_values), false);
   }
 
  protected:
@@ -145,11 +147,29 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
   bool startup_pending_;
   bool was_on_;
 
+  // Brightness the bottom of the HA slider maps to (hardware minimum).
+  float min_brightness_;
+
   // Linear CT mix params
   float br_, cr_;
   float bg_, cg_;
   float bb_, cb_;
   float bw_, cw_;
+
+  /// Maps the Home Assistant brightness (0..1) onto the bulb's usable range and
+  /// converts it to a linear PWM level.
+  ///
+  /// The remap happens in perceptual (slider) space, not in duty space: a
+  /// min_power style floor in duty space would flatten the bottom of the slider,
+  /// because gamma compresses low slider values to very small duties. Stretching
+  /// the slider onto [min_brightness_ .. 1] instead keeps every position of the
+  /// slider distinct and monotonic, with HA 0% producing exactly what
+  /// min_brightness_ used to produce.
+  float brightness_to_level_(light::LightState *state, const light::LightColorValues &values) const {
+    float raw = clamp(values.get_state() * values.get_brightness() * values.get_color_brightness(), 0.0f, 1.0f);
+    float scaled = this->min_brightness_ + (1.0f - this->min_brightness_) * raw;
+    return state->gamma_correct_lut(scaled);
+  }
 
   void apply_channels_(light::LightState *state, float level, bool kickstart) {
     if (!state->current_values.is_on()) {
@@ -229,25 +249,16 @@ class ColorTempRGBWLight : public Component, public light::LightOutput {
     }
 
     // --- Color wheel mode (RGB/HS) ---
-    // current_values_as_rgb() applies gamma exactly once (same as the CT branch
-    // above), so the perceived brightness matches between the two modes.
-    float r = 0, g = 0, b = 0;
-    state->current_values_as_rgb(&r, &g, &b);
+    // Same brightness mapping as the CT branch above: `level` is the linear duty
+    // for the brightest channel (single gamma, min_brightness stretch included)
+    // and the normalised colour scales the remaining channels proportionally, so
+    // the hue is kept and both colour modes dim identically over the slider.
+    float lvl = clamp(level, 0.0f, 1.0f);
+    float r = clamp(lvl * state->current_values.get_red(), 0.0f, 1.0f);
+    float g = clamp(lvl * state->current_values.get_green(), 0.0f, 1.0f);
+    float b = clamp(lvl * state->current_values.get_blue(), 0.0f, 1.0f);
 
-    if (kickstart) {
-      // Scale the color up so the brightest channel reaches the startup level
-      float max_channel = std::max(r, std::max(g, b));
-      float factor = (max_channel > 0.0001f) ? (STARTUP_LEVEL / max_channel) : 1.0f;
-      r *= factor;
-      g *= factor;
-      b *= factor;
-    }
-
-    r = clamp(r, 0.0f, 1.0f);
-    g = clamp(g, 0.0f, 1.0f);
-    b = clamp(b, 0.0f, 1.0f);
-
-    ESP_LOGD(TAG, "RGB mode: kickstart=%d -> R=%.3f G=%.3f B=%.3f", (int) kickstart, r, g, b);
+    ESP_LOGD(TAG, "RGB mode: level=%.3f kickstart=%d -> R=%.3f G=%.3f B=%.3f", lvl, (int) kickstart, r, g, b);
 
     if (red_) red_->set_level(r);
     if (green_) green_->set_level(g);

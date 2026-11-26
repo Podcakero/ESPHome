@@ -15,6 +15,7 @@ CONF_RED = "red"
 CONF_GREEN = "green"
 CONF_BLUE = "blue"
 CONF_WHITE = "white"
+CONF_MIN_BRIGHTNESS = "min_brightness"
 
 # RGB_LIGHT_SCHEMA matches the previous `custom` light platform
 # (which used ADDRESSABLE_LIGHT_SCHEMA): gamma_correct, default_transition_length,
@@ -26,6 +27,9 @@ CONFIG_SCHEMA = light.RGB_LIGHT_SCHEMA.extend(
         cv.Required(CONF_GREEN): cv.use_id(output.FloatOutput),
         cv.Required(CONF_BLUE): cv.use_id(output.FloatOutput),
         cv.Required(CONF_WHITE): cv.use_id(output.FloatOutput),
+        # Brightness 0% in Home Assistant maps to this value, for bulbs that
+        # cannot dim below a certain point. 0% keeps the full 0..100% range.
+        cv.Optional(CONF_MIN_BRIGHTNESS, default="0%"): cv.percentage,
     }
 )
 
@@ -48,3 +52,4 @@ async def to_code(config):
     cg.add(var.set_green(green))
     cg.add(var.set_blue(blue))
     cg.add(var.set_white(white))
+    cg.add(var.set_min_brightness(config[CONF_MIN_BRIGHTNESS]))
